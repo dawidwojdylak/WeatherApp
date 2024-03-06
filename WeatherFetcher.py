@@ -9,7 +9,10 @@ class WeatherFetcher:
 
     def __init__(self, callback, location_data):
         self.callback = callback
-        self.API = self.BASE_OPEN_METEO_API_URL + f"?latitude={location_data.get("latitude")}&longitude={location_data.get("longitude")}&hourly=temperature_2m,rain"
+        self.API = self.BASE_OPEN_METEO_API_URL \
+                    + f"?latitude={location_data.get('latitude')}" \
+                      f"&longitude={location_data.get('longitude')}" \
+                      f"&hourly=temperature_2m,rain"
 
         self.city_name = location_data.get("name")
 
@@ -22,7 +25,7 @@ class WeatherFetcher:
             response = requests.get(self.API)
             if response.status_code == self.SUCCESSFUL_REQUEST:
                 data = response.json()
-                units = data.get('hourly_units')
-                weather_data = data.get('hourly')
+                units = data.get("hourly_units")
+                weather_data = data.get("hourly")
                 await self.callback(weather_data, units)
             break
