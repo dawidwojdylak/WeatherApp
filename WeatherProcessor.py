@@ -1,12 +1,11 @@
 class WeatherProcessor:
     def __init__(self, low_temp_limit, high_rain_limit,
-                 any_condition_met):
+                 independent):
         self.low_temp_limit = low_temp_limit
         self.high_rain_limit = high_rain_limit
-        self.any_condition_met = any_condition_met
-        self.city_name = None
+        self.independent = independent
 
-    async def process_data(self, weatherData, units):
+    async def process_data(self, weatherData, units, name):
         low_temp_indices = [
             idx for idx, val 
             in enumerate(weatherData.get("temperature_2m", []))
@@ -18,7 +17,7 @@ class WeatherProcessor:
             if val >= self.high_rain_limit
             ]
 
-        if self.any_condition_met:
+        if self.independent:
             indices = sorted(list(set(low_temp_indices
                         + high_rain_indices)))
         else:
@@ -26,9 +25,9 @@ class WeatherProcessor:
                         & set(high_rain_indices)))
 
         text_fill = 25 * "-"
-        text = f"{text_fill}REPORT{text_fill}\n"
+        text = f"{text_fill}REPORT for {name}{text_fill}\n"
         for i in indices:
-            text += f"Warning {self.city_name}, "
+            text += f"Warning {name}, "
             temp_flag = False
 
             if i in low_temp_indices:
@@ -46,6 +45,3 @@ class WeatherProcessor:
             text += f"expected on {weatherData.get('time')[i]}\n"
 
         print(text)
-
-    def set_city_name(self, name):
-        self.city_name = name
