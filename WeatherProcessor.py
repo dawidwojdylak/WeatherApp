@@ -1,18 +1,21 @@
 class WeatherProcessor:
-    def __init__(self, low_temp_limit, high_rain_limit):
+    def __init__(self, low_temp_limit, high_rain_limit, any_condition_met):
         self.low_temp_limit = low_temp_limit
         self.high_rain_limit = high_rain_limit
+        self.any_condition_met = any_condition_met
         self.city_name = None
 
     async def process_data(self, weatherData, units):
         low_temp_indices = [idx for idx, val in enumerate(weatherData.get("temperature_2m", [])) if val <= self.low_temp_limit]
         high_rain_indices = [idx for idx, val in enumerate(weatherData.get("rain", [])) if val >= self.high_rain_limit]
 
-        indices = sorted(list(set(low_temp_indices + high_rain_indices)))
-        # indices = set(low_temp_indices + high_rain_indices)
+        if self.any_condition_met:
+            indices = sorted(list(set(low_temp_indices + high_rain_indices)))
+        else:
+            indices = sorted(list(set(low_temp_indices) & set(high_rain_indices)))
 
         text_fill = 25 * '-'
-        text = f"{text_fill}REPORT{text_fill}"
+        text = f"{text_fill}REPORT{text_fill}\n"
         for i in indices:
             text += f"Warning {self.city_name}, "
             temp_flag = False
