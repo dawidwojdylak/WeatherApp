@@ -31,6 +31,7 @@ async def main():
     async def callback(weather_data, units, name):
         await processor.process_data(weather_data, units, name)
     fetcher = WeatherFetcher(callback, args.cityname)
+    await fetcher._init()
 
     await fetcher.get_weather_data()
 
