@@ -8,12 +8,17 @@ def parse():
     parser = argparse.ArgumentParser()
     parser.description = "A script that prints weather alerts."
     parser.add_argument("-t", "--temperature", type=float,
-                        help="Temperature bottom threshold [Celc deg].",
+                        help="Set the temperature bottom threshold in " \
+                             "Celcius degrees.",    
                         required=True)
     parser.add_argument("-r", "--rainfall", type=float,
-                        help="Rainfall top threshold [mm].", required=True)
+                        help="Set the rainfall top threshold in milimeters.",
+                        required=True)
     
-    parser.add_argument("-c", "--cityname", type=str, default="Wroclaw")
+    parser.add_argument("-c", "--cityname", type=str, default="Wroclaw",
+                        help="Specify the name of the city for which " \
+                             "weather alerts will be generated. Default " \
+                             "is set to a predefined city.")
     parser.add_argument("-i", "--independent", action="store_true",
                         help="If this option is used, the weather " \
                             "log will be displayed if either of the " \
