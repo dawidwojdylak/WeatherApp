@@ -38,7 +38,9 @@ async def main():
     fetcher = WeatherFetcher(callback, args.cityname)
     await fetcher.setup()
 
-    await fetcher.get_weather_data()
+    loop = asyncio.get_event_loop()
+    fetcher_task = loop.create_task(fetcher.get_weather_data())
+    await asyncio.gather(fetcher_task)
 
 if __name__ == "__main__":
     asyncio.run(main())
