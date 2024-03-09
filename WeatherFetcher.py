@@ -9,8 +9,10 @@ class WeatherFetcher:
     def __init__(self, callback, city_name):
         self.callback = callback
         self.city_name = city_name
+        self.meteo_api = None
+        self.geocoding_api = None
 
-    async def _init(self):
+    async def setup(self):
         self.geocoding_api = f"{self.BASE_OPEN_METEO_GEOCODING_API_URL}" \
                     f"?name={self.city_name}&count={1}&language=en&format=json"
         
@@ -22,28 +24,35 @@ class WeatherFetcher:
                             f"&hourly=temperature_2m,rain"
 
     async def get_city_coordinates(self):
+        lat = None
+        lon = None
         async with aiohttp.ClientSession() as session:
             try:
                 async with session.get(self.geocoding_api) as response:
                     data = await response.json()
                     if data:
-                        results = data.get('results')[0] # first result only
-                    self.city_name = results.get("name")
-                    return results.get("latitude"), results.get("longitude")
+                        results = data.get('results') 
+                        if results:
+                            results = results[0] # first result only
+                            self.city_name = results.get("name") 
+                            lat = results.get("latitude")
+                            lon = results.get("longitude")
+                        else:
+                            print(f"Details for the city \"{self.city_name}\" were not found.")
             except aiohttp.ClientConnectionError as e:
-                print(f"Connection error:{e}")
-            except TypeError as e:
-                print("An error occured:", e)
-                return None, None
+                print(f"Connection error: {e}")
+        return lat, lon
 
     async def get_weather_data(self):
-        try:
-            async with aiohttp.ClientSession() as session:
-                async with session.get(self.meteo_api) as response:
-                    data = await response.json()
-                    units = data.get("hourly_units")
-                    weather_data = data.get("hourly")
-                    await self.callback(weather_data, units, self.city_name)
-        except TypeError as e:
-            print("An error occured:", e)
-        pass
+        async with aiohttp.ClientSession() as session:
+            try:
+                if self.meteo_api:
+                    async with session.get(self.meteo_api) as response:
+                        data = await response.json()
+                        units = data.get("hourly_units")
+                        weather_data = data.get("hourly")
+                        await self.callback(weather_data, units, self.city_name)
+                else:
+                    print("Weather data is not available.")
+            except aiohttp.ClientConnectionError as e:
+                print(f"Connection error: {e}")
