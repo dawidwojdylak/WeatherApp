@@ -1,0 +1,5 @@
+.vscode/
+.venv/
+task.md
+__pycache__
+temp
