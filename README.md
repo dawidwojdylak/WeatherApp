@@ -34,3 +34,13 @@ Warning Krakow, low temperature 8.4 of °C and rain 0.1 mm expected on 2024-03-1
 Warning Krakow, low temperature 8.5 of °C and rain 0.1 mm expected on 2024-03-11T04:00
 Warning Krakow, low temperature 8.4 of °C and rain 0.2 mm expected on 2024-03-11T05:00
 ```
+
+### Tests
+To run the unit tests, also install
+```bash
+pip install pytest pytest-asyncio
+```
+and run
+```bash
+pytest tests/TestWeatherFetcher.py
+```
