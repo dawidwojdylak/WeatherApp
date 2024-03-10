@@ -5,10 +5,11 @@ class WeatherProcessor:
         """Initialize a weather processor object.
         
         Args:
-            low_temp_limit (float): The lower temperature limit in Celcius degree.
+            low_temp_limit (float): 
+                            The lower temperature limit in Celcius degree.
             high_rain_limit (float): The top temperature limit in milimeters.
             independent (bool): If false, both thresholds need to be passed, 
-                                to display a warning. Otherwise any threshold 
+                                to display a warning. Otherwise any threshold
                                 passed will display a warning. 
         """
         self.low_temp_limit = low_temp_limit

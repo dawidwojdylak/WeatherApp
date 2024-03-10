@@ -6,7 +6,8 @@ class WeatherFetcher:
     # status code 200 means that the request was successful
     SUCCESSFUL_REQUEST = 200
     BASE_OPEN_METEO_API_URL = "https://api.open-meteo.com/v1/forecast"
-    BASE_OPEN_METEO_GEOCODING_API_URL = "https://geocoding-api.open-meteo.com/v1/search"
+    BASE_OPEN_METEO_GEOCODING_API_URL = \
+        "https://geocoding-api.open-meteo.com/v1/search"
     def __init__(self, callback, city_name):
         """Initialize weather fetcher object.
         
@@ -28,7 +29,7 @@ class WeatherFetcher:
         """Prepare API URLs. Must be called after 
         the constructor manually, because it needs to be awaited."""
         self.geocoding_api = f"{self.BASE_OPEN_METEO_GEOCODING_API_URL}" \
-                    f"?name={self.city_name}&count={1}&language=en&format=json"
+            f"?name={self.city_name}&count={1}&language=en&format=json"
         
         lat, lon = await self.get_city_coordinates()
         if lat is not None and lon is not None:
@@ -57,7 +58,8 @@ class WeatherFetcher:
                             lat = results.get("latitude")
                             lon = results.get("longitude")
                         else:
-                            print(f"Details for the city \"{self.city_name}\" were not found.")
+                            print(f"Details for the city " \
+                                  f"\"{self.city_name}\" were not found.")
             except aiohttp.ClientConnectionError as e:
                 print(f"Connection error: {e}")
         return lat, lon
@@ -73,7 +75,8 @@ class WeatherFetcher:
                         data = await response.json()
                         units = data.get("hourly_units")
                         weather_data = data.get("hourly")
-                        await self.callback(weather_data, units, self.city_name)
+                        await self.callback(weather_data, units, 
+                                            self.city_name)
                 else:
                     print("Weather data is not available.")
             except aiohttp.ClientConnectionError as e:
