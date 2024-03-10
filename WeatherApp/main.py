@@ -1,6 +1,5 @@
 import argparse
 import asyncio
-import configparser
 from WeatherFetcher import WeatherFetcher
 from WeatherProcessor import WeatherProcessor
 
